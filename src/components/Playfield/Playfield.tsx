@@ -22,10 +22,10 @@ const Playfield = (): JSX.Element => {
     ...row.reduce<Array<JSX.Element>>((acc, curr, index) => {
       return [...acc, <Field value={curr} key={`${rowIndex}-${index}`} />];
     }, []),
-    <div className={styles.linebreak} />,
+    <br key={rowIndex} />,
   ]);
 
-  return <div className={styles.container}>{render}</div>;
+  return <div className={styles.playfield}>{render}</div>;
 };
 
 export default Playfield;
