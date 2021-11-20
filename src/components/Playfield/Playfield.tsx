@@ -1,5 +1,6 @@
 import * as React from "react";
 import Field from "../Field";
+import styles from "./styles.module.css";
 
 const Playfield = (): JSX.Element => {
   const [solution, setSolution] = React.useState<number[][]>([]);
@@ -17,13 +18,14 @@ const Playfield = (): JSX.Element => {
     setSolution(matrix);
   }, []);
 
-  const render = solution.map((row, rowIndex) =>
-    row.reduce<Array<JSX.Element>>((acc, curr, index) => {
+  const render = solution.map((row, rowIndex) => [
+    ...row.reduce<Array<JSX.Element>>((acc, curr, index) => {
       return [...acc, <Field value={curr} key={`${rowIndex}-${index}`} />];
-    }, [])
-  );
+    }, []),
+    <div className={styles.linebreak} />,
+  ]);
 
-  return <>{render}</>;
+  return <div className={styles.container}>{render}</div>;
 };
 
 export default Playfield;
