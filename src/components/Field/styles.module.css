@@ -27,6 +27,12 @@
 .field:nth-of-type(n + 19):nth-last-of-type(n + 55) {
   border-bottom: 3px solid #222;
 }
+.field:nth-of-type(n + 28):nth-last-of-type(n + 46) {
+  border-top: none;
+}
 .field:nth-of-type(n + 55):nth-last-of-type(n + 19) {
   border-top: 3px solid #222;
+}
+.field:nth-of-type(n + 64):nth-last-of-type(n + 10) {
+  border-top: none;
 }
