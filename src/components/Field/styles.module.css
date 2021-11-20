@@ -2,6 +2,8 @@
   width: 10vmin;
   height: 10vmin;
   border: 1px solid #ccc;
+  border-bottom: none;
+  border-left: none;
 
   display: flex;
   align-items: center;
@@ -13,6 +15,18 @@
   box-sizing: border-box;
 }
 
+.field:nth-of-type(-n + 9) {
+  border-top: none;
+}
 .field:nth-of-type(3n) {
-  border: 1px solid #ccc;
+  border-right: 3px solid #222;
+}
+.field:nth-of-type(9n) {
+  border-right: none;
+}
+.field:nth-of-type(n + 19):nth-last-of-type(n + 55) {
+  border-bottom: 3px solid #222;
+}
+.field:nth-of-type(n + 55):nth-last-of-type(n + 19) {
+  border-top: 3px solid #222;
 }
