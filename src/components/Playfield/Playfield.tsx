@@ -3,13 +3,17 @@ import Field from "../Field";
 import styles from "./styles.module.css";
 
 const Playfield = (): JSX.Element => {
-  type keyMatrix = number[][];
-  type solutionMatrix = (number | null)[][];
-  const [key, setKey] = React.useState<keyMatrix>([]);
-  const [solution, setSolution] = React.useState<solutionMatrix>([]);
+  type KeyMatrix = number[][];
+  type SolutionMatrix = (number | null)[][];
+  type Indices = [number, number];
+  const [key, setKey] = React.useState<KeyMatrix>([]);
+  const [solution, setSolution] = React.useState<SolutionMatrix>([]);
+  const [selectedCellIndices, setSelectedCellIndices] = React.useState<
+    [number, number] | null
+  >(null);
 
   React.useEffect(function initialiseMatrix() {
-    const matrix: keyMatrix = [];
+    const matrix: KeyMatrix = [];
 
     for (let i = 0; i < 9; i++) {
       matrix.push([]);
@@ -22,10 +26,9 @@ const Playfield = (): JSX.Element => {
   }, []);
 
   const generateRandomIndices = () => {
-    type indices = [number, number];
-    let arr: indices[] = [];
+    let arr: Indices[] = [];
     while (arr.length < 36) {
-      const randomElement: indices = [
+      const randomElement: Indices = [
         Math.floor(Math.random() * 9),
         Math.floor(Math.random() * 9),
       ];
@@ -41,7 +44,7 @@ const Playfield = (): JSX.Element => {
     return arr;
   };
 
-  const revealKey = (matrix: solutionMatrix) => {
+  const revealKey = (matrix: SolutionMatrix) => {
     const randomIndices = generateRandomIndices();
     randomIndices.forEach((indices) => {
       matrix[indices[0]][indices[1]] = key[indices[0]][indices[1]];
@@ -51,7 +54,7 @@ const Playfield = (): JSX.Element => {
 
   const initialiseSolution = () => {
     if (key.length === 0) return;
-    let matrix: solutionMatrix = [];
+    let matrix: SolutionMatrix = [];
 
     for (let i = 0; i < 9; i++) {
       matrix.push([]);
@@ -65,9 +68,33 @@ const Playfield = (): JSX.Element => {
 
   React.useEffect(initialiseSolution, [key]);
 
+  const toggleCell = (indices: Indices) => {
+    setSelectedCellIndices((prev) =>
+      prev
+        ? prev[0] === indices[0] && prev[1] === indices[1]
+          ? null
+          : indices
+        : indices
+    );
+  };
+
   const render = solution.map((row, rowIndex) => [
     ...row.reduce<Array<JSX.Element>>((acc, curr, index) => {
-      return [...acc, <Field value={curr} key={`${rowIndex}-${index}`} />];
+      return [
+        ...acc,
+        <Field
+          value={curr}
+          key={`${rowIndex}-${index}`}
+          onClick={toggleCell}
+          indices={[rowIndex, index]}
+          selected={
+            selectedCellIndices
+              ? rowIndex === selectedCellIndices[0] &&
+                index === selectedCellIndices[1]
+              : false
+          }
+        />,
+      ];
     }, []),
     <br key={rowIndex} />,
   ]);

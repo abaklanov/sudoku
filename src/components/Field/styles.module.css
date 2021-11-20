@@ -13,6 +13,8 @@
   font-weight: 300;
 
   box-sizing: border-box;
+
+  cursor: default;
 }
 
 .field:nth-of-type(-n + 9) {
@@ -35,4 +37,8 @@
 }
 .field:nth-of-type(n + 46):nth-last-of-type(n + 28) {
   border-bottom: none;
+}
+
+.selected {
+  background-color: #badefb;
 }
