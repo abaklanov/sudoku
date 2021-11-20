@@ -2,7 +2,7 @@ import * as React from "react";
 import styles from "./styles.module.css";
 
 type FieldProps = {
-  value: number;
+  value: number | null;
 };
 
 const Field = (props: FieldProps): JSX.Element => {

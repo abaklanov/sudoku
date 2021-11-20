@@ -7,4 +7,8 @@ describe("Playfield", () => {
     render(<Playfield />);
     expect(screen.getAllByTestId("field").length).toBe(81);
   });
+  it("exposes 36 fields for a player initially", () => {
+    render(<Playfield />);
+    expect(screen.getAllByText(/\d/i).length).toBe(36);
+  });
 });
