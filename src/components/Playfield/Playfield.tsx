@@ -8,7 +8,7 @@ const Playfield = (): JSX.Element => {
   type Indices = [number, number];
   const [key, setKey] = React.useState<KeyMatrix>([]);
   const [solution, setSolution] = React.useState<SolutionMatrix>([]);
-  const [selectedCellIndices, setSelectedCellIndices] = React.useState<
+  const [selectedFieldIndices, setSelectedFieldIndices] = React.useState<
     [number, number] | null
   >(null);
 
@@ -68,8 +68,8 @@ const Playfield = (): JSX.Element => {
 
   React.useEffect(initialiseSolution, [key]);
 
-  const toggleCell = (indices: Indices) => {
-    setSelectedCellIndices((prev) =>
+  const toggleField = (indices: Indices) => {
+    setSelectedFieldIndices((prev) =>
       prev
         ? prev[0] === indices[0] && prev[1] === indices[1]
           ? null
@@ -85,12 +85,18 @@ const Playfield = (): JSX.Element => {
         <Field
           value={curr}
           key={`${rowIndex}-${index}`}
-          onClick={toggleCell}
+          onClick={toggleField}
           indices={[rowIndex, index]}
           selected={
-            selectedCellIndices
-              ? rowIndex === selectedCellIndices[0] &&
-                index === selectedCellIndices[1]
+            selectedFieldIndices
+              ? rowIndex === selectedFieldIndices[0] &&
+                index === selectedFieldIndices[1]
+              : false
+          }
+          highlighted={
+            selectedFieldIndices
+              ? rowIndex === selectedFieldIndices[0] ||
+                index === selectedFieldIndices[1]
               : false
           }
         />,

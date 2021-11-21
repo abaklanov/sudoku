@@ -42,3 +42,7 @@
 .selected {
   background-color: #badefb;
 }
+
+.highlighted {
+  background-color: #e2ebf3;
+}
