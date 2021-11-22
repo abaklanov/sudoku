@@ -78,6 +78,35 @@ const Playfield = (): JSX.Element => {
     );
   };
 
+  const isInSquareWithSelected = (indices: Indices) => {
+    if (!selectedFieldIndices) return false;
+
+    const convertToSquareCoords = (index: number) => Math.floor(index / 3);
+    const selectedSquareCoords = selectedFieldIndices.map(
+      convertToSquareCoords
+    );
+    const attempteeSquareCoords = indices.map(convertToSquareCoords);
+
+    return (
+      JSON.stringify(selectedSquareCoords) ===
+      JSON.stringify(attempteeSquareCoords)
+    );
+  };
+
+  const isInLineOrColumnWithSelected = (indices: Indices) => {
+    return selectedFieldIndices
+      ? indices[0] === selectedFieldIndices[0] ||
+          indices[1] === selectedFieldIndices[1]
+      : false;
+  };
+
+  const isHighlighted = (indices: Indices) => {
+    if (!selectedFieldIndices) return false;
+    return (
+      isInLineOrColumnWithSelected(indices) || isInSquareWithSelected(indices)
+    );
+  };
+
   const render = solution.map((row, rowIndex) => [
     ...row.reduce<Array<JSX.Element>>((acc, curr, index) => {
       return [
@@ -93,12 +122,7 @@ const Playfield = (): JSX.Element => {
                 index === selectedFieldIndices[1]
               : false
           }
-          highlighted={
-            selectedFieldIndices
-              ? rowIndex === selectedFieldIndices[0] ||
-                index === selectedFieldIndices[1]
-              : false
-          }
+          highlighted={isHighlighted([rowIndex, index])}
         />,
       ];
     }, []),
