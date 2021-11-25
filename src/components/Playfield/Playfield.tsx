@@ -1,6 +1,7 @@
 import * as React from "react";
 import Field from "../Field";
 import styles from "./styles.module.css";
+import { Chance } from "chance";
 
 const Playfield = (): JSX.Element => {
   type KeyMatrix = number[][];
@@ -11,8 +12,7 @@ const Playfield = (): JSX.Element => {
   const [selectedFieldIndices, setSelectedFieldIndices] = React.useState<
     [number, number] | null
   >(null);
-
-  React.useEffect(function initialiseMatrix() {
+  React.useEffect(function initialiseKey() {
     const matrix: KeyMatrix = [];
 
     for (let i = 0; i < 9; i++) {
@@ -25,48 +25,56 @@ const Playfield = (): JSX.Element => {
     setKey(matrix);
   }, []);
 
-  const generateRandomIndices = () => {
-    let arr: Indices[] = [];
-    while (arr.length < 36) {
-      const randomElement: Indices = [
-        Math.floor(Math.random() * 9),
-        Math.floor(Math.random() * 9),
-      ];
-      if (
-        !arr.find(
-          (element) =>
-            element[0] === randomElement[0] && element[1] === randomElement[1]
-        )
-      )
-        arr.push(randomElement);
-    }
+  React.useEffect(
+    function initialiseSolution() {
+      const generateRandomIndices = () => {
+        const chance = process.env.REACT_APP_RANDOMIZER_SEED
+          ? new Chance(process.env.REACT_APP_RANDOMIZER_SEED)
+          : new Chance();
 
-    return arr;
-  };
+        let arr: Indices[] = [];
+        while (arr.length < 36) {
+          const randomElement: Indices = [
+            chance.integer({ min: 0, max: 8 }),
+            chance.integer({ min: 0, max: 8 }),
+          ];
+          if (
+            !arr.find(
+              (element) =>
+                element[0] === randomElement[0] &&
+                element[1] === randomElement[1]
+            )
+          )
+            arr.push(randomElement);
+        }
 
-  const revealKey = (matrix: SolutionMatrix) => {
-    const randomIndices = generateRandomIndices();
-    randomIndices.forEach((indices) => {
-      matrix[indices[0]][indices[1]] = key[indices[0]][indices[1]];
-    });
-    return matrix;
-  };
+        return arr;
+      };
+      const revealKey = (matrix: SolutionMatrix) => {
+        const randomIndices = generateRandomIndices();
+        randomIndices.forEach((indices) => {
+          matrix[indices[0]][indices[1]] = key[indices[0]][indices[1]];
+        });
+        return matrix;
+      };
+      const initialize = () => {
+        if (key.length === 0) return;
+        let matrix: SolutionMatrix = [];
 
-  const initialiseSolution = () => {
-    if (key.length === 0) return;
-    let matrix: SolutionMatrix = [];
+        for (let i = 0; i < 9; i++) {
+          matrix.push([]);
+          for (let j = 0; j < 9; j++) {
+            matrix[i].push(null);
+          }
+        }
+        matrix = revealKey(matrix);
+        setSolution(matrix);
+      };
 
-    for (let i = 0; i < 9; i++) {
-      matrix.push([]);
-      for (let j = 0; j < 9; j++) {
-        matrix[i].push(null);
-      }
-    }
-    matrix = revealKey(matrix);
-    setSolution(matrix);
-  };
-
-  React.useEffect(initialiseSolution, [key]);
+      initialize();
+    },
+    [key]
+  );
 
   const toggleField = (indices: Indices) => {
     setSelectedFieldIndices((prev) =>
@@ -117,12 +125,18 @@ const Playfield = (): JSX.Element => {
           onClick={toggleField}
           indices={[rowIndex, index]}
           selected={
-            selectedFieldIndices
+            !!selectedFieldIndices
               ? rowIndex === selectedFieldIndices[0] &&
                 index === selectedFieldIndices[1]
               : false
           }
           highlighted={isHighlighted([rowIndex, index])}
+          sameNumber={
+            !!selectedFieldIndices
+              ? solution[selectedFieldIndices[0]][selectedFieldIndices[1]] ===
+                solution[rowIndex][index]
+              : false
+          }
         />,
       ];
     }, []),

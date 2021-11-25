@@ -50,4 +50,15 @@ describe("Playfield", () => {
     expect(screen.getByTestId("field-1,5")).toHaveClass("highlighted");
     expect(screen.getByTestId("field-2,5")).toHaveClass("highlighted");
   });
+  it("highlights fields with the same number", () => {
+    render(<Playfield />);
+    const field = screen.getByTestId("field-1,7");
+    fireEvent.click(field);
+    expect(field).toHaveClass("selected");
+    expect(screen.getByTestId("field-2,4")).toHaveClass("sameNumber");
+    expect(screen.getByTestId("field-3,0")).toHaveClass("sameNumber");
+    expect(screen.getByTestId("field-5,3")).toHaveClass("sameNumber");
+    expect(screen.getByTestId("field-6,8")).toHaveClass("sameNumber");
+    expect(screen.getByTestId("field-8,2")).toHaveClass("sameNumber");
+  });
 });
